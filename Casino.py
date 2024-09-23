@@ -1033,9 +1033,8 @@ def dailyreward():
         try: 
             loaded_datetime = json.loads(json_datetime)
             lastrewardtime = datetime.fromisoformat(loaded_datetime["current_time"])
-        except (json.JSONDecodeError, KeyError, ValueError)as e:
+        except (json.JSONDecodeError, KeyError, ValueError):
             lastrewardtime = datetime(year= 2020, month= 1, day= 1, hour= 1, minute= 1, second= 1, microsecond= 1)
-            print("very bad", e)
     timediff = currenttime - lastrewardtime
     if timediff.days >= 1:
         print("Spin a wheel which gives you a random amount of money or XP.\nThe more levels that you have, the bigger the payout\n\nPress enter to continue")
