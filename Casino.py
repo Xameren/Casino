@@ -944,7 +944,7 @@ def Coinflip():
                 print("You won ", b, "dollars!")
                 print("You gained 10 XP ")
                 xp += 10
-
+    time.sleep(2)
 #HorseBettin()
 #keno()
 #casinowar()
@@ -1065,12 +1065,12 @@ def dailyreward():
             sleepytime += 0.1
             time.sleep(sleepytime)
         if bigrandom == 1:
-            money += randmoney
+            money += randmoney*level
             print("\033[H\033[J", end="")
             print("Your daily reward is...")
             print(f"> {randmoney*level} $ <")
         else:
-            xp += randxp
+            xp += randxp*level
             print("\033[H\033[J", end="")
             print("Your daily reward is...")
             print(f"> {randxp*level} XP <")
@@ -1205,6 +1205,10 @@ def load_game():
         if legit == False: # ):
             print("I should have allowed you to change the odds \nof the games in the save file aswell, eh?")
             time.sleep(7)
+            if money > 999999999:
+                print("Youre so greedy aswell...")
+                money = 0
+            time.sleep(3)
 
         load_fail = False
     else:
