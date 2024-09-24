@@ -6,6 +6,8 @@ import os
 import json
 import datetime
 from datetime import datetime, timedelta
+import hashlib
+
 os.system("title " + "Let's go gambling! dududu ehh. God damn it!")
 
 # GAMES
@@ -182,7 +184,6 @@ def Roulette():
     for i in range(5):    
     
         print("\033[H", end="")
-        print()
         print(decortext, " Roulette wheel ", decortext)
         print(textdecorup)
         print(f"|{cleanedtext}|")
@@ -910,13 +911,16 @@ def Coinflip():
         stringeffect2 = ""
         count = 0
         speed = 0
+        result = ""
         while count < random.randint(9,10):
             print("\033[H\033[J", end="")
             print(stringeffect + "Tossing..." + stringeffect2)
             if count == 1 or count == 3 or count == 5 or count == 7 or count == 9:
                 print("->  Heads  <-")
+                result = "heads"
             else:
                 print("->  Tails  <-")
+                result = "tails"
             print(stringeffect + "Tossing..." + stringeffect2)
             if count == 3 or count == 6 or count == 9:
                 stringeffect2 += "]"
@@ -924,7 +928,7 @@ def Coinflip():
             count += 1
             speed += 0.075
             time.sleep(speed)
-        if count == 9:
+        if result == "heads":
             if a == 1:
                 money = money+(b*2)
                 print("You won ", b, "dollars!")
@@ -1033,7 +1037,7 @@ def dailyreward():
         try: 
             loaded_datetime = json.loads(json_datetime)
             lastrewardtime = datetime.fromisoformat(loaded_datetime["current_time"])
-        except (json.JSONDecodeError, KeyError, ValueError):
+        except (json.JSONDecodeError, KeyError, ValueError)as e:
             lastrewardtime = datetime(year= 2020, month= 1, day= 1, hour= 1, minute= 1, second= 1, microsecond= 1)
     timediff = currenttime - lastrewardtime
     if timediff.days >= 1:
@@ -1076,6 +1080,8 @@ def dailyreward():
             print(f"> {randxp*level} XP <")
         time.sleep(2)
         lastrewardtime = datetime.now()
+
+        save_game()
     else:
         next_reward_time = lastrewardtime + timedelta(hours=24)
         
@@ -1094,47 +1100,58 @@ def CasinoMenu():
             xp -= xptoreach
             level += 1
             print("\033[H\033[J", end="")
+        xptoreach = xptoreachbase*level
+        xp_filled_value = round((xp / xptoreach) * 20)
+        xp_filled = ""
+        for _ in range(xp_filled_value):
+            xp_filled += '#'
+        for _ in range(20 - xp_filled_value):
+            xp_filled += '-'
 
         print("\033[H\033[J", end="")
         save_game()
-        print(f"Welcome to the Casino, {username}!")
-        print("Which game would you like to play?\n")
-        print("1.  Roulette")
-        print("2.  Slots")
-        print("3.  Horse Betting")
-        print("4.  Casino War")
-        print("5.  Coin Flip")
-        print("6.  Crash")
-        print("7.  Keno")
-        print("8.  Stats")
-        print("9.  Daily reward")
-        print("10. Exit")
+        print(f"Welcome to the Casino, \033[1m{username}!\033[0m")
+        print(f"Money:    {money}")
+        print(f"Level:    {level}")
+        print(f"XP:       {xp} / {xptoreach}")
+        print(f"[{xp_filled}]\n")
+        print("1) Roulette")
+        print("2) Slots")
+        print("3) Horse Betting")
+        print("4) Casino War")
+        print("5) Coin Flip")
+        print("6) Crash")
+        print("7) Keno")
+        print("8) Daily reward\n")
+
+        print("s) Stats")
+        print("q) Exit")
         while True:
             try: 
-                choicemenu = int(input("\nSelect a number associated with the game.\n"))
+                choicemenu = input("\nSelect an option: ")
 
-                if choicemenu == 1:
+                if choicemenu == "1":
                     Roulette()
-                elif choicemenu == 2:
+                elif choicemenu == "2":
                     Slots()
-                elif choicemenu == 3:
+                elif choicemenu == "3":
                     HorseBettin()
-                elif choicemenu == 4:
+                elif choicemenu == "4":
                     CasinoWar()
-                elif choicemenu == 5:
+                elif choicemenu == "5":
                     Coinflip()
-                elif choicemenu == 6:
+                elif choicemenu == "6":
                     coolstoppingargument = True
                     cashout = False
                     dead = False
                     Crash()
-                elif choicemenu == 7:
+                elif choicemenu == "7":
                     Keno()
-                elif choicemenu == 8:
-                    Stats()
-                elif choicemenu == 9:
+                elif choicemenu == "8":
                     dailyreward()
-                elif choicemenu == 10:
+                elif choicemenu == "s":
+                    Stats()
+                elif choicemenu == "q":
                     sys.exit()
                 break
             except ValueError:
@@ -1145,10 +1162,10 @@ def CasinoMenu():
 
 
 def save_game():
-    global xptoreach, value1, legit, json_datetime
-
-    value1 = money+xp+xptoreach+level+wins_roulette+wins_slots+wins_keno+wins_casinowar+wins_coinflip+wins_crash+wins_horsebetting
-
+    global xptoreach, value1, legit, json_datetime, m
+    m = hashlib.sha256(f"{money+xp+xptoreach+level+wins_roulette+wins_slots+wins_keno+wins_casinowar+wins_coinflip+wins_crash+wins_horsebetting}".encode())
+    value1 = m.hexdigest()
+    
     game_state = {
         "money": money,
         "merry_christmas": merry_christmas,
@@ -1167,20 +1184,22 @@ def save_game():
         "legit": legit,
         "json_datetime": json_datetime
     }
+    if legit == False:
+        game_state["value1"] = "cheater"
+        game_state["legit"] = False
 
     with open(save_file, 'w') as file:
         json.dump(game_state, file)
 
 def load_game():
-    global json_datetime, lastrewardtime, legit, value1, load_fail, money, merry_christmas, username, xp, xptoreach, wins_casinowar, wins_coinflip, wins_crash, wins_horsebetting, wins_keno, wins_roulette, wins_slots, level, username
+    global m, json_datetime, lastrewardtime, legit, value1, load_fail, money, merry_christmas, username, xp, xptoreach, wins_casinowar, wins_coinflip, wins_crash, wins_horsebetting, wins_keno, wins_roulette, wins_slots, level, username
     if os.path.exists(save_file):
-        with open(save_file, 'r') as file:
-            try:
+        try:
+            with open(save_file, 'r') as file:
                 game_state = json.load(file)
                 username = game_state["username"]
                 money = game_state["money"]
                 merry_christmas = game_state["merry_christmas"]
-                username = game_state["username"]
                 xp = game_state["xp"]
                 xptoreach = game_state["xptoreach"]
                 level = game_state["level"]
@@ -1194,13 +1213,18 @@ def load_game():
                 value1 = game_state["value1"]
                 legit = game_state["legit"]
                 json_datetime = game_state["json_datetime"]
-            except Exception:
-                print("You have an outdated or a corrupted save file!")
-        if legit == True:
-            if money+xp+xptoreach+level+wins_roulette+wins_slots+wins_keno+wins_casinowar+wins_coinflip+wins_crash+wins_horsebetting == value1:
-                legit = True
-            else:
-                legit = False
+            g = hashlib.sha256(f"{money+xp+xptoreach+level+wins_roulette+wins_slots+wins_keno+wins_casinowar+wins_coinflip+wins_crash+wins_horsebetting}".encode())
+            new_value1 = g.hexdigest()
+            if legit == True:
+                if new_value1 == value1:
+                    legit = True
+                else:
+                    legit = False
+        except Exception as e:
+            print(f"You have an outdated or a corrupted save file! Error {e} \n A value might be missing")
+            time.sleep(3)
+            sys.exit()
+
 
         if legit == False: # ):
             print("I should have allowed you to change the odds \nof the games in the save file aswell, eh?")
@@ -1208,8 +1232,7 @@ def load_game():
             if money > 999999999:
                 print("Youre so greedy aswell...")
                 money = 0
-            time.sleep(3)
-
+                time.sleep(3)
         load_fail = False
     else:
         load_fail = True
