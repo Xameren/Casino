@@ -1221,11 +1221,11 @@ def pickusername():
     if load_fail == True:
         while True:
             print("\033[H\033[J", end="")
-            print("You seem to be new here. Please enter your username.\n If you arent new, please restart this app")
-            a = input()
-            print("Are you sure? (Y/N)")
-            b = input()
-            if b.lower() == "y":
+            print("You seem to be new here. Let's create you an account!\nYou will be prompted to pick an username. You can also quit this program with Ctrl+C.")
+            a = input("Pick an username: ")
+            print(f"Your username will {a}.")
+            b = input("Proceed? (y/N) ")
+            if b.lower() == "y" or b.lower == "yes":
                 break
         username = a
     CasinoMenu()
