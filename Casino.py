@@ -1092,7 +1092,7 @@ def dailyreward():
         now_str = lastrewardtime.isoformat()
         json_datetime = json.dumps({"current_time": now_str})
 def CasinoMenu():
-    global cashout, dead, coolstoppingargument, username,xp,level,xptoreach
+    global cashout, dead, coolstoppingargument, username, money, xp, level, xptoreach
     while True:
         xptoreach = xptoreachbase*level
         while xp > xptoreach:
@@ -1107,6 +1107,9 @@ def CasinoMenu():
             xp_filled += '#'
         for _ in range(20 - xp_filled_value):
             xp_filled += '-'
+
+        money = round(money)
+        xp = round(xp)
 
         print("\033[H\033[J", end="")
         save_game()
