@@ -146,7 +146,7 @@ def Roulette():
     decor = 1
     print("\033[H\033[J", end="")
 
-    for i in range(15, 51): # change to 1 when testing, the result is 15. The default is random.randint(15, 51)
+    for i in range(random.randint(15, 51)): # change to 1 when testing, the result is 15. The default is random.randint(15, 51)
         start_index = i % len(RouletteWheelNumbers)
         the_roulette = RouletteWheelNumbers[start_index:start_index+5]
         if len(the_roulette) < 5:
