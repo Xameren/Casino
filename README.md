@@ -1,6 +1,7 @@
 ## Xameren's Casino
 This is a simple CLI/TUI Casino featuring a variety of different games. Try your luck and win big!
-
+ 
+![An image of the casino's CLI](https://github.com/Xameren/Casino/blob/main/Casino%20image.png)
 ## Casino game list
 **Roulette**
 Predict where the ball will land on the roulette wheel.
