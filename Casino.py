@@ -122,7 +122,7 @@ def Roulette():
     print("+---------------------------+")
     print("| Red | Black || Odd | Even |")
     print("|===========================|")
-    print("| 1st 12 | 2nd 12 | 13rd 12 |")
+    print("| 1st 12 | 2nd 12 | 3rd 12  |")
     print("|===========================|")
     print("| Individual numbers (0-36) |")
     print("+---------------------------+")
@@ -390,9 +390,9 @@ def Slots():
     time.sleep(0.25)
 
     def win_slots(slot):
-        global money,xp
+        global money,xp, wins_slots
         decor_value = 1
-        xpwin = 1
+        xpwin = 0
         if slot == "🍒":
             money += bet_slots*1.25
             youwon = bet_slots*1.25
@@ -448,9 +448,9 @@ def Slots():
             print(decor_print, " You won ", youwon, " dollars ", decor_print)
             print(decor_print, " You gained ", xpwin," XP ", decor_print)
 
-            xp += xpwin
-            time.sleep(0.2)
-    wins_slots += 1
+        xp += xpwin
+        time.sleep(0.2)
+        wins_slots += 1
 
     def lost_slots():
         decor_value = 1
@@ -481,6 +481,8 @@ def Slots():
                 win_slots("🔔2")
             elif slot_two == "💎":
                 win_slots("💎2")
+        elif slot_one == "❌" and slot_two == "❌" or slot_two == "❌" and slot_three == "❌":
+            lost_slots()
         else:
             if slot_one == "🍒":
                 win_slots("🍒")
@@ -818,7 +820,7 @@ def CasinoWar():
         
         
         if card_value_player > card_value_dealer:
-            print(f"= You won {bet} dollars=")
+            print(f"= You won {bet} dollars =")
             money += bet
             wins_casinowar += 1
             print("You gained 15 XP ")
@@ -1092,10 +1094,12 @@ def dailyreward():
         now_str = lastrewardtime.isoformat()
         json_datetime = json.dumps({"current_time": now_str})
 def CasinoMenu():
-    global cashout, dead, coolstoppingargument, username, money, xp, level, xptoreach
+    global cashout, dead, coolstoppingargument, username, money, xp,level,xptoreach
+    money = round(money)
+    xp = round(xp)
     while True:
         xptoreach = xptoreachbase*level
-        while xp > xptoreach:
+        while xp >= xptoreach:
             print("Calculating your new level...")
             xp -= xptoreach
             level += 1
@@ -1107,9 +1111,6 @@ def CasinoMenu():
             xp_filled += '#'
         for _ in range(20 - xp_filled_value):
             xp_filled += '-'
-
-        money = round(money)
-        xp = round(xp)
 
         print("\033[H\033[J", end="")
         save_game()
