@@ -18,7 +18,7 @@ RouletteWheelColors =  ["🟩", "🟥", "⬛", "🟥", "⬛", "🟥", "⬛", "�
 RouletteRed =          [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 RouletteBlack =        [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 
-SlotSymbols = ["❌", "🍒", "🍒", "🔔", "🔔", "🍋", "🍋", "💎"] # Intended for Slot Mashines
+SlotSymbols = ["❌", "🍒", "🔔", "🍋", "❌", "🍒", "🔔", "🍋", "💎"] # Intended for Slot Mashines
 
 # Keno.             No list to implement
 # Horse betting.    No list to implement
@@ -33,7 +33,6 @@ dailyrewardlistXP = [75, 100, 125, 150]
 
 money = 1000
 merry_christmas = True
-
 
 username = "N/A"
 xp = 0
@@ -85,6 +84,14 @@ def Stats():
 
 def Roulette():
     global money, wins_roulette, xp
+
+    def WinRoulette(winmultiplier, winxp):
+        global money, wins_roulette, xp    
+        money += bet_roulette*winmultiplier
+        print("You won ", bet_roulette*winmultiplier, " dollars ")
+        wins_roulette += 1
+        print(f"You gained {winxp} XP ")
+        xp += winxp
     
     def is_odd(number):
         return number % 2 != 0
@@ -208,18 +215,12 @@ def Roulette():
         result = 0
     result_color = str(RouletteWheelColors[start_index+2:start_index+3]).translate(translationtable)
 
-    # Now, there might be a better way to implement this.
-    # Now, I dont want to search for a better way to do this.
-    # Now, enjoy this Yandere Dev teir code.
+    # Holy Yandere Dev.
     
     try:
         if -1 < int(userinputroulette) < 37:
             if int(userinputroulette) == result:
-                print("You won ", bet_roulette*5, " dollars ")
-                money += bet_roulette*5
-                wins_roulette += 1
-                print("You gained 50 XP ")
-                xp += 50
+                WinRoulette(5, 50)
             else:
                 print("You lost ", bet_roulette, " dollars ")
     except ValueError:
@@ -227,82 +228,46 @@ def Roulette():
         if result == 0:
             try:
                 if int(userinputroulette) == result:
-                    print("You won ", bet_roulette*10, " dollars ")
-                    money += bet_roulette*10
-                    wins_roulette += 1
-                    print("You gained 75 XP ")
-                    xp += 75
+                    WinRoulette(10, 75)
             except ValueError: 
                 if userinputroulette == "odd":
-                    print("You won ", bet_roulette*2, " dollars ")
-                    money += bet_roulette*2
-                    wins_roulette += 1
-                    print("You gained 15 XP ")
-                    xp += 15
+                    WinRoulette(2, 15)
                 else:
                     print("You lost ", bet_roulette, " dollars ")
                     
         elif userinputroulette == "1st12":
             if result < 13:
-                print("You won ", bet_roulette*2, " dollars ")
-                money += bet_roulette*2
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         elif userinputroulette == "2nd12":
             if 12 < result < 25:
-                print("You won ", bet_roulette*2, " dollars ")
-                money += bet_roulette*2
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         elif userinputroulette == "3rd12":
             if 24 < result:
-                print("You won ", bet_roulette*2, " dollars ")
-                money += bet_roulette*2
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         elif userinputroulette == "odd":
             if is_odd(result):
-                print("You won ", bet_roulette*2, " dollars ")
-                money += bet_roulette*2
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         elif userinputroulette == "even":
             if is_odd(result):
                 print("You lost ", bet_roulette, " dollars ")
             else:
-                money += bet_roulette*2
-                print("You won ", bet_roulette*2, " dollars ")
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
         elif userinputroulette == "black":
             if result_color == "⬛":
-                money += bet_roulette*2
-                print("You won ", bet_roulette*2, " dollars ")
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         elif userinputroulette == "red":
             if result_color == "🟥":
-                money += bet_roulette*2
-                print("You won ", bet_roulette*2, " dollars ")
-                wins_roulette += 1
-                print("You gained 15 XP ")
-                xp += 15
+                WinRoulette(2, 15)
             else:
                 print("You lost ", bet_roulette, " dollars ")
         
@@ -359,72 +324,59 @@ def Slots():
     
     random_time = random.randint(20,25)
     
+    def menu(decor = "==", decor2 = "==", decor3 = "=="):
+        print(f"+={decor}==={decor2}==={decor3}=+\n| {slot_one} | {slot_two} | {slot_three} |\n+={decor}==={decor2}==={decor3}=+")
+
     for _ in range(random_time):
         print("\033[H", end="")
-        print("+==============+")
-        print(f"| {slot_one} | {slot_two} | {slot_three} |")
-        print("+==============+")
+        menu()
         slot_one = random.choice(SlotSymbols)
         slot_two = random.choice(SlotSymbols)
         slot_three = random.choice(SlotSymbols)
         time.sleep(0.25)
     for _ in range(5):
         print("\033[H", end="")
-        print("+=##===========+")
-        print(f"| {slot_one} | {slot_two} | {slot_three} |")
-        print("+=##===========+")
+        menu("##")
         slot_two = random.choice(SlotSymbols)
         slot_three = random.choice(SlotSymbols)
         time.sleep(0.25)
     for _ in range(5):
         print("\033[H", end="")
-        print("+=##===##======+")
-        print(f"| {slot_one} | {slot_two} | {slot_three} |")
-        print("+=##===##======+")
+        menu("##", "##")
         slot_three = random.choice(SlotSymbols)
         time.sleep(0.25)
     print("\033[H", end="")
-    print("+=##===##===##=+")
-    print(f"| {slot_one} | {slot_two} | {slot_three} |")
-    print("+=##===##===##=+")
+    menu("##", "##", "##")
     time.sleep(0.25)
 
     def win_slots(slot):
-        global money,xp, wins_slots
+        global money,xp, wins_slots, xpwin, youwon
         decor_value = 1
         xpwin = 0
+
+        def win_win_slots(winmultiplier, winxp):
+            global money,xp, wins_slots, xpwin, youwon
+            money += bet_slots*winmultiplier
+            youwon = bet_slots*winmultiplier
+            xpwin += winxp
+
+
         if slot == "🍒":
-            money += bet_slots*1.25
-            youwon = bet_slots*1.25
-            xpwin += 3
+            win_win_slots(1.25, 3)
         elif slot == "🍋":
-            money += bet_slots*1.5
-            youwon = bet_slots*1.5
-            xpwin += 4
+            win_win_slots(1.5, 4)
         elif slot == "🔔":
-            money += bet_slots*1.75
-            youwon = bet_slots*1.75
-            xpwin += 5
+            win_win_slots(1.75, 5)
         elif slot == "💎":
-            money += bet_slots*2
-            youwon = bet_slots*2
-            xpwin += 10
+            win_win_slots(2, 10)
         elif slot == "🍒2":
-            money += bet_slots*3
-            youwon = bet_slots*3
-            xpwin += 10
+            win_win_slots(3, 10)
         elif slot == "🍋2":
-            money += bet_slots*4
-            youwon = bet_slots*4
-            xpwin += 15
+            win_win_slots(4, 15)
         elif slot == "🔔2":
-            money += bet_slots*5
-            youwon = bet_slots*5
-            xpwin += 20
+            win_win_slots(5, 20)
         elif slot == "💎2":
-            money += bet_slots*10
-            youwon = bet_slots*10
-            xpwin = 25
+            win_win_slots(10, 25)
         else:
             print("som mes up")
         for _ in range(12):
@@ -434,19 +386,16 @@ def Slots():
             decor_3 = "\\"
             if decor_value == 1 or decor_value == 4 or decor_value == 7 or  decor_value == 10:
                 decor_print = decor_1
-                decor_value += 1
             elif decor_value == 2 or decor_value == 5 or decor_value == 8 or  decor_value == 11:
                 decor_print = decor_2
-                decor_value += 1
             else:
                 decor_print = decor_3
-                decor_value += 1
+            decor_value += 1
             print("\033[H", end="")
-            print("+=##===##===##=+")
-            print(f"| {slot_one} | {slot_two} | {slot_three} |")
-            print("+=##===##===##=+")
+            menu("##", "##", "##")
             print(decor_print, " You won ", youwon, " dollars ", decor_print)
             print(decor_print, " You gained ", xpwin," XP ", decor_print)
+            time.sleep(0.15)
 
         xp += xpwin
         time.sleep(0.2)
@@ -454,44 +403,30 @@ def Slots():
 
     def lost_slots():
         decor_value = 1
+        end_screen1 = f"x=##===##===##=x\n| {slot_one} | {slot_two} | {slot_three} |\nx=##===##===##=x\n\\ You lost , {bet_slots}, dollars /"
+        end_screen2 = f"+=##===##===##=+\n| {slot_one} | {slot_two} | {slot_three} |\n+=##===##===##=+\n  You lost , {bet_slots}, dollars  "
         for _ in range(7):
             if decor_value == 1:
                 print("\033[H", end="")
-                print("x=##===##===##=x")
-                print(f"| {slot_one} | {slot_two} | {slot_three} |")
-                print("x=##===##===##=x")
-                print("\\ You lost ", bet_slots, " dollars /")
+                print(end_screen1)
                 decor_value += 1
             else:
                 print("\033[H", end="")
-                print("+=##===##===##=+")
-                print(f"| {slot_one} | {slot_two} | {slot_three} |")
-                print("+=##===##===##=+")
-                print("  You lost ", bet_slots, " dollars  ")
+                print(end_screen2)
                 decor_value -= 1
             time.sleep(0.5)
     if slot_one == slot_two or slot_one == slot_three or slot_two == slot_three:
 
         if slot_one == slot_two == slot_three:
-            if slot_two == "🍒":
-                win_slots("🍒2")
-            elif slot_two == "🍋":
-                win_slots("🍋2")
-            elif slot_two == "🔔":
-                win_slots("🔔2")
-            elif slot_two == "💎":
-                win_slots("💎2")
-        elif slot_one == "❌" and slot_two == "❌" or slot_two == "❌" and slot_three == "❌":
+            if slot_two != "❌":
+                win_slots(f"{slot_two}2")
+            
+        elif slot_one == "❌" and slot_two == "❌" or slot_two == "❌" and slot_three == "❌" or slot_three == "❌" and slot_one == "❌":
             lost_slots()
         else:
-            if slot_one == "🍒":
-                win_slots("🍒")
-            elif slot_one == "🍋":
-                win_slots("🍋")
-            elif slot_one == "🔔":
-                win_slots("🔔")
-            elif slot_one == "💎":
-                win_slots("💎")
+            if slot_two != "❌":
+                win_slots(f"{slot_two}")
+    
     else:
         lost_slots()
     time.sleep(2)
@@ -505,7 +440,6 @@ def Keno():
     print(f"\nCurrent balance: {money}")
     print("Enter your bet or say \"Payout\" for the payout table")
     
-
     # Picks: {mistake count: multiplier, mistake count: multiplier, mistake count: multiplier, mistake count: multiplier, }
     payout_keno = { 
         1: {0: 1.5},
@@ -577,7 +511,6 @@ def Keno():
             if a not in NumbersPicked:
                 NumbersPicked.append(a)
                 break
-        test = str(NumbersPicked)
         print("\033[H", end="")
         print("Numbers which you have picked: [", user_input_keno, "]")
         print("Numbers randomally chosen: ", NumbersPicked)
@@ -594,7 +527,6 @@ def Keno():
     payout_for_num_picks = payout_keno.get(num_picks, {})
     reward_multiplier = payout_for_num_picks.get(num_mistakes, 0)
 
-
     money += bet_keno_int * reward_multiplier
     
     print("You won ", bet_keno_int*reward_multiplier, " dollars")
@@ -610,16 +542,27 @@ def Keno():
 
 def HorseBettin():
     global money, wins_horsebetting, xp
+
+    def winhorsebetting(horseinput, randfloat, horsiewinner):
+        global money, wins_horsebetting, xp
+        money += round((horseinput*randfloat), 0)
+        wins_horsebetting += 1
+        xp += 15
+        print(f"# {horsiewinner} won the race! #")
+        print("You won ", horseinput*randfloat, " dollars")
+        print("You gained 15 XP ")
+
+    def losehorsebetting(horseinput, horsiewinner):
+        global money
+        money -= horseinput
+        print(f"\\ {horsiewinner} won the race! /")
+        print(f"You lost {horseinput} dollars")
+        round(money, 0)
+
     print("\033[H\033[J", end="")
     round(money, 0)
-    Horse1progressleft = ""
-    Horse1progressright = "-------------------------------------------------"
-    Horse2progressleft = ""
-    Horse2progressright = "-------------------------------------------------"
-    Horse3progressleft = ""
-    Horse3progressright = "-------------------------------------------------"
-    Horse4progressleft = ""
-    Horse4progressright = "-------------------------------------------------"
+    Horse1progressleft = Horse2progressleft = Horse3progressleft = Horse4progressleft = ""
+    Horse1progressright= Horse2progressright= Horse3progressright= Horse4progressright = "-------------------------------------------------"
 
     random_float_1 = round(random.uniform(1, 2), 2)
     random_float_2 = round(random.uniform(1, 2), 2)    
@@ -695,70 +638,37 @@ def HorseBettin():
             horsiewinner == "Horse 1"
             print("# Horse 1 won the race! #")
             if horsiechooseinput == 1:
-                money += round(horsiebetinput*random_float_1, 0)
-                wins_horsebetting += 1
-                round(money, 0)
-                print("You won ", horsiebetinput*random_float_1, " dollars")
-                print("You gained 15 XP ")
-                xp += 15
+                winhorsebetting(horsiebetinput, random_float_1, "Horse 1")
                 break
             else:
-                money -= horsiebetinput
-                print("You lost ", horsiebetinput, " dollars")
-                round(money, 0)
+                losehorsebetting(horsiebetinput, "Horse 1")
                 break
 
         if Horse2progressright == "":
             horsiewinner == "Horse 2"
-            print("# Horse 2 won the race! #")
             if horsiechooseinput == 2:
-                money += round(horsiebetinput*random_float_2+0.15)
-                wins_horsebetting += 1
-                print("You won ", horsiebetinput*random_float_2+0.15, " dollars")
-                print("You gained 15 XP ")
-                xp += 15
-                round(money, 0)
+                winhorsebetting(horsiebetinput, random_float_2+0.15, "Horse 2")
                 break
             else:
-                money -= horsiebetinput
-                print("You lost ", horsiebetinput, " dollars")
-                round(money, 0)
+                losehorsebetting(horsiebetinput, "Horse 2")
                 break
 
-        
         if Horse3progressright == "":
             horsiewinner == "Horse 3"
-            print("# Horse 3 won the race! #")
             if horsiechooseinput == 3:
-                money += round(horsiebetinput*random_float_1+0.15)
-                wins_horsebetting += 1
-                print("You won ", horsiebetinput*random_float_1+0.15, " dollars")
-                print("You gained 15 XP ")
-                xp += 15
-                round(money, 0)
+                winhorsebetting(horsiebetinput, random_float_1+0.15, "Horse 3")
                 break
             else:
-                money -= horsiebetinput
-                print("You lost ", horsiebetinput, " dollars")
-                round(money, 0)
+                losehorsebetting(horsiebetinput, "Horse 3")
                 break
-        
         
         if Horse4progressright == "":
             horsiewinner == "Horse 4"
-            print("# Horse 4 won the race! #")
             if horsiechooseinput == 4:
-                money += round(horsiebetinput*random_float_2)
-                wins_horsebetting += 1
-                print("You won ", horsiebetinput*random_float_2, " dollars")
-                print("You gained 15 XP ")
-                xp += 15
-                round(money, 0)
+                winhorsebetting(horsiebetinput, random_float_2, "Horse 4")
                 break
             else:
-                money -= horsiebetinput
-                print("You lost ", horsiebetinput, " dollars")
-                round(money, 0)
+                losehorsebetting(horsiebetinput, "Horse 4")
                 break
     round(money, 0)
     print("Your current balance:", money)
@@ -799,7 +709,6 @@ def CasinoWar():
                     print("Please choose 'Y' or 'N'.")
         print("\033[H\033[J", end="")
         
-        
         picked_card_player = random.choice(list(cards.keys()))
         picked_card_dealer = random.choice(list(cards.keys()))
         
@@ -817,7 +726,6 @@ def CasinoWar():
         print(f"Dealer's card: \n[ {picked_card_dealer} ]")
 
         time.sleep(1)
-        
         
         if card_value_player > card_value_dealer:
             print(f"= You won {bet} dollars =")
@@ -882,6 +790,17 @@ def CasinoWar():
 
 def Coinflip():
     global money, wins_coinflip, xp
+    def coinflipwin(b):
+        global money, wins_coinflip, xp
+        money = money+(b*2)
+        wins_coinflip += 1
+        print("You won ", b, "dollars!")
+        print("You gained 10 XP ")
+        xp += 10
+    def coinfliplose(b):
+        global money
+        money = money-b
+        print("You lost", b, "dollars!")
     print("\033[H\033[J", end="")
     round(money, 0)
     print("🪙 Welcome to coinflip 🪙")
@@ -909,11 +828,8 @@ def Coinflip():
         
     if leave != True:
 
-        stringeffect = ""
-        stringeffect2 = ""
-        count = 0
-        speed = 0
-        result = ""
+        stringeffect = stringeffect2 = result = ""
+        count = speed = 0
         while count < random.randint(9,10):
             print("\033[H\033[J", end="")
             print(stringeffect + "Tossing..." + stringeffect2)
@@ -932,31 +848,15 @@ def Coinflip():
             time.sleep(speed)
         if result == "heads":
             if a == 1:
-                money = money+(b*2)
-                print("You won ", b, "dollars!")
-                print("You gained 10 XP ")
-                xp += 10
-                wins_coinflip += 1
+                coinflipwin(b)
             else:
-                money = money-b
-                print("You lost", b, "dollars!")
+                coinfliplose(b)
         else:
             if a == 1:
-                money = money-b
-                print("You lost", b, "dollars!")
+                coinfliplose(b)
             else:
-                money = money+(b*2)
-                wins_coinflip += 1
-                print("You won ", b, "dollars!")
-                print("You gained 10 XP ")
-                xp += 10
+                coinflipwin(b)
     time.sleep(2)
-#HorseBettin()
-#keno()
-#casinowar()
-#Coinflip()
-#input()
-
 def stopper():
     global cashout, dead, coolstoppingargument
     while coolstoppingargument == False:
@@ -1041,6 +941,7 @@ def dailyreward():
             lastrewardtime = datetime.fromisoformat(loaded_datetime["current_time"])
         except (json.JSONDecodeError, KeyError, ValueError)as e:
             lastrewardtime = datetime(year= 2020, month= 1, day= 1, hour= 1, minute= 1, second= 1, microsecond= 1)
+            
     timediff = currenttime - lastrewardtime
     if timediff.days >= 1:
         print("Spin a wheel which gives you a random amount of money or XP.\nThe more levels that you have, the bigger the payout\n\nPress enter to continue")
@@ -1082,7 +983,10 @@ def dailyreward():
             print(f"> {randxp*level} XP <")
         time.sleep(2)
         lastrewardtime = datetime.now()
-
+        next_reward_time = lastrewardtime + timedelta(hours=24)
+        formatted_next_reward_time = next_reward_time.strftime("%Y-%m-%d %H:%M:%S")
+        now_str = lastrewardtime.isoformat()
+        json_datetime = json.dumps({"current_time": now_str})
         save_game()
     else:
         next_reward_time = lastrewardtime + timedelta(hours=24)
@@ -1161,9 +1065,7 @@ def CasinoMenu():
             except ValueError:
                 print("Please select a valid option")
 
-
 # This is designed for saving and loading. Remove the next 3 definitions to remove this feature, and end the script with CasinoMenu()
-
 
 def save_game():
     global xptoreach, value1, legit, json_datetime, m
@@ -1228,7 +1130,6 @@ def load_game():
             print(f"You have an outdated or a corrupted save file! Error {e} \n A value might be missing")
             time.sleep(3)
             sys.exit()
-
 
         if legit == False: # ):
             print("I should have allowed you to change the odds \nof the games in the save file aswell, eh?")
