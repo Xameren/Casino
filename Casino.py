@@ -18,7 +18,7 @@ RouletteWheelColors =  ["🟩", "🟥", "⬛", "🟥", "⬛", "🟥", "⬛", "�
 RouletteRed =          [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
 RouletteBlack =        [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
 
-SlotSymbols = ["❌", "🍒", "🔔", "🍋", "❌", "🍒", "🔔", "🍋", "💎"] # Intended for Slot Mashines
+SlotSymbols = ["❌", "🍒", "🔔", "🍋", "🍒", "🔔", "🍋", "💎"] # Intended for Slot Mashines
 
 # Keno.             No list to implement
 # Horse betting.    No list to implement
@@ -361,24 +361,12 @@ def Slots():
             xpwin += winxp
 
 
-        if slot == "🍒":
-            win_win_slots(1.25, 3)
-        elif slot == "🍋":
-            win_win_slots(1.5, 4)
-        elif slot == "🔔":
-            win_win_slots(1.75, 5)
-        elif slot == "💎":
-            win_win_slots(2, 10)
-        elif slot == "🍒2":
-            win_win_slots(3, 10)
-        elif slot == "🍋2":
-            win_win_slots(4, 15)
-        elif slot == "🔔2":
-            win_win_slots(5, 20)
-        elif slot == "💎2":
-            win_win_slots(10, 25)
-        else:
-            print("som mes up")
+        conditions = ["🍒", "🍋", "🔔", "💎", "🍒2", "🍋2", "🔔2", "💎2"]
+        MoneyMultiplier = [1.25, 1.5, 1.75, 2, 3, 4, 5, 10]
+        XpMultiplier = [3, 4, 5, 10, 10, 15, 20, 25]
+        for index in range(8):
+            if slot == conditions[index]:
+                win_win_slots(MoneyMultiplier[index], XpMultiplier[index])
         for _ in range(12):
             decor_print = "/"
             decor_1 = "/"
@@ -566,14 +554,16 @@ def HorseBettin():
 
     random_float_1 = round(random.uniform(1, 2), 2)
     random_float_2 = round(random.uniform(1, 2), 2)    
+    random_float_3 = round(random.uniform(1, 2), 2)
+    random_float_4 = round(random.uniform(1, 2), 2)    
     
     print("🐎 Welcome to horse betting 🐎\n")
     print("The point of the game is to bet on the horse that will win the race\nYour winnings are calculated using the odds of winning (bet*odds)\n")
     print("Current odds:")
     print("Horse 1: ", round(random_float_1,2))
-    print("Horse 2: ", round((random_float_2 + 0.15),2))
-    print("Horse 3: ", round((random_float_1 + 0.15),2))
-    print("Horse 4: ", round((random_float_2),2))
+    print("Horse 2: ", round((random_float_2),2))
+    print("Horse 3: ", round((random_float_3),2))
+    print("Horse 4: ", round((random_float_4),2))
     print(f"\nCurrent balance: {money}")
     print("Pick a horse you will bet on")
 
@@ -634,42 +624,19 @@ def HorseBettin():
         print("Horse 4: [", Horse4progressleft, "🏇", Horse4progressright, "]")
         print(cooleffecthorsetexttitle)
 
-        if Horse1progressright == "":
-            horsiewinner == "Horse 1"
-            print("# Horse 1 won the race! #")
-            if horsiechooseinput == 1:
-                winhorsebetting(horsiebetinput, random_float_1, "Horse 1")
-                break
-            else:
-                losehorsebetting(horsiebetinput, "Horse 1")
-                break
-
-        if Horse2progressright == "":
-            horsiewinner == "Horse 2"
-            if horsiechooseinput == 2:
-                winhorsebetting(horsiebetinput, random_float_2+0.15, "Horse 2")
-                break
-            else:
-                losehorsebetting(horsiebetinput, "Horse 2")
-                break
-
-        if Horse3progressright == "":
-            horsiewinner == "Horse 3"
-            if horsiechooseinput == 3:
-                winhorsebetting(horsiebetinput, random_float_1+0.15, "Horse 3")
-                break
-            else:
-                losehorsebetting(horsiebetinput, "Horse 3")
-                break
+        for index in range(4):
+            horseright = [Horse1progressright, Horse2progressright, Horse3progressright, Horse4progressright]
+            horses = ["Horse 1", "Horse 2", "Horse 3", "Horse 4"]
+            floats = [random_float_1, random_float_2, random_float_3, random_float_4]
+            if horseright[index] == "":
+                horsiewinner = horses[index]
+                if horsiechooseinput == index + 1:
+                    winhorsebetting(horsiebetinput, floats[index], horsiewinner)
+                    break
+                else:
+                    losehorsebetting(horsiebetinput, horsiewinner)
+                    break
         
-        if Horse4progressright == "":
-            horsiewinner == "Horse 4"
-            if horsiechooseinput == 4:
-                winhorsebetting(horsiebetinput, random_float_2, "Horse 4")
-                break
-            else:
-                losehorsebetting(horsiebetinput, "Horse 4")
-                break
     round(money, 0)
     print("Your current balance:", money)
     time.sleep(2)
@@ -929,6 +896,9 @@ def Crash():
 
 def dailyreward():
     global money, xp, lastrewardtime, json_datetime
+    def menu():
+        print("\033[H\033[J", end="")
+        print("Your daily reward is...")
     print("\033[H\033[J", end="")
 
     currenttime = datetime.now()
@@ -946,8 +916,7 @@ def dailyreward():
     if timediff.days >= 1:
         print("Spin a wheel which gives you a random amount of money or XP.\nThe more levels that you have, the bigger the payout\n\nPress enter to continue")
         input()
-        print("\033[H\033[J", end="")
-        print("Your daily reward is...")
+        menu()
         decordaily = ""
         for _ in range(5):
             print("\033[H\033[J", end="")
@@ -961,25 +930,21 @@ def dailyreward():
             bigrandom = random.randint(1, 2)
             if bigrandom == 1:
                 randmoney = random.choice(dailyrewardlistmoney)
-                print("\033[H\033[J", end="")
-                print("Your daily reward is...")
+                menu()
                 print(f"[ {randmoney*level} $ ]")
             else:
                 randxp = random.choice(dailyrewardlistXP)
-                print("\033[H\033[J", end="")
-                print("Your daily reward is...")
+                menu()
                 print(f"[ {randxp*level} XP ]")
             sleepytime += 0.1
             time.sleep(sleepytime)
         if bigrandom == 1:
             money += randmoney*level
-            print("\033[H\033[J", end="")
-            print("Your daily reward is...")
+            menu()
             print(f"> {randmoney*level} $ <")
         else:
             xp += randxp*level
-            print("\033[H\033[J", end="")
-            print("Your daily reward is...")
+            menu()
             print(f"> {randxp*level} XP <")
         time.sleep(2)
         lastrewardtime = datetime.now()
