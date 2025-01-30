@@ -153,7 +153,7 @@ def Roulette():
     decor = 1
     print("\033[H\033[J", end="")
 
-    for i in range(random.randint(15, 51)): # change to 1 when testing, the result is 15. The default is random.randint(15, 51)
+    for i in range(random.randint(15, 51)): # if you change this to 1 ( eg. for testing), youll get the result 15. The default is random.randint(15, 51)
         start_index = i % len(RouletteWheelNumbers)
         the_roulette = RouletteWheelNumbers[start_index:start_index+5]
         if len(the_roulette) < 5:
@@ -166,7 +166,6 @@ def Roulette():
         cleanedtext = str(the_roulette).translate(translationtable)
         cleanedcolors = str(the_roulette_colors).translate(translationtable)
         time.sleep(roulette_speed)
-        #if roulette_speed < 0.75:
         roulette_speed += 0.01
         if decor == 1:
             decortext = "/"
@@ -215,69 +214,33 @@ def Roulette():
         result = 0
     result_color = str(RouletteWheelColors[start_index+2:start_index+3]).translate(translationtable)
 
-    # Holy Yandere Dev.
+    # <del>Holy Yandere Dev.</del> Not anymore :)
     
+    expected_inputs = ["1st12", "2nd12", "3rd12"]
+    conditions = [13, 25, 37]
+    won_roulette = False
     try:
-        if -1 < int(userinputroulette) < 37:
-            if int(userinputroulette) == result:
+        if int(userinputroulette) == result:
+            if result == 0:
+                WinRoulette(10, 75)
+            else:
                 WinRoulette(5, 50)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
     except ValueError:
-        
-        if result == 0:
-            try:
-                if int(userinputroulette) == result:
-                    WinRoulette(10, 75)
-            except ValueError: 
-                if userinputroulette == "odd":
-                    WinRoulette(2, 15)
-                else:
-                    print("You lost ", bet_roulette, " dollars ")
-                    
-        elif userinputroulette == "1st12":
-            if result < 13:
+        for index in range(3):
+            if userinputroulette == expected_inputs[index] and result < conditions[index]:
                 WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        elif userinputroulette == "2nd12":
-            if 12 < result < 25:
-                WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        elif userinputroulette == "3rd12":
-            if 24 < result:
-                WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        elif userinputroulette == "odd":
-            if is_odd(result):
-                WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        elif userinputroulette == "even":
-            if is_odd(result):
-                print("You lost ", bet_roulette, " dollars ")
-            else:
-                WinRoulette(2, 15)
-        elif userinputroulette == "black":
-            if result_color == "⬛":
-                WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        elif userinputroulette == "red":
-            if result_color == "🟥":
-                WinRoulette(2, 15)
-            else:
-                print("You lost ", bet_roulette, " dollars ")
-        
-        else:
-            print("big error")
-
+                won_roulette = True
+                
+        if userinputroulette == "odd" and is_odd(result) or userinputroulette == "even" and not is_odd(result):
+            WinRoulette(2, 15)
+        elif userinputroulette == "black" and result_color == "⬛" or userinputroulette == "red" and result_color == "🟥":
+            WinRoulette(2, 15)
+        elif won_roulette == False:
+            print("You lost ", bet_roulette, " dollars ")
 
     time.sleep(2)
 
-#Roulette()
+
 def Slots():
     global money, wins_slots, merry_christmas
     print("\033[H\033[J", end="")
