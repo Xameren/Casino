@@ -556,6 +556,10 @@ def HorseBettin():
 
     horsiewinner = ""
     print("\033[H\033[J", end="")
+    horseright = ["-------------------------------------------------" for _ in range(4)]
+    horseleft = ["" for _ in range(4)]
+    horses = ["Horse 1", "Horse 2", "Horse 3", "Horse 4"]
+    floats = [random_float_1, random_float_2, random_float_3, random_float_4]
     while horsiewinner == "":
         if change_title <= 2:
             cooleffecthorsetexttitle = "-#- Race in progress -#- Race in progress -#- Race in progress -#-"
@@ -566,31 +570,18 @@ def HorseBettin():
         if change_title == 5:
             change_title = 1
         time.sleep(0.2)
-        a = random.randint(1,4)
-        if a == 1:
-            Horse1progressleft += "-"
-            Horse1progressright = Horse1progressright.replace("-", "", 1)
-        if a == 2:
-            Horse2progressleft += "-"
-            Horse2progressright = Horse2progressright.replace("-", "", 1)
-        if a == 3:
-            Horse3progressleft += "-"
-            Horse3progressright = Horse3progressright.replace("-", "", 1)
-        if a == 4:
-            Horse4progressleft += "-"
-            Horse4progressright = Horse4progressright.replace("-", "", 1)
+        a = random.randint(0,3)
+        
+        horseleft[a] += "-"
+        horseright[a] = horseright[a].replace("-", "", 1)
+
         print("\033[H", end="")
         print(cooleffecthorsetexttitle)
-        print("Horse 1: [", Horse1progressleft, "🏇", Horse1progressright, "]")
-        print("Horse 2: [", Horse2progressleft, "🏇", Horse2progressright, "]")
-        print("Horse 3: [", Horse3progressleft, "🏇", Horse3progressright, "]")
-        print("Horse 4: [", Horse4progressleft, "🏇", Horse4progressright, "]")
+        for i in range(4):
+            print(f"{horses[i]}: [{horseleft[i]}🏇{horseright[i]}]")
         print(cooleffecthorsetexttitle)
 
         for index in range(4):
-            horseright = [Horse1progressright, Horse2progressright, Horse3progressright, Horse4progressright]
-            horses = ["Horse 1", "Horse 2", "Horse 3", "Horse 4"]
-            floats = [random_float_1, random_float_2, random_float_3, random_float_4]
             if horseright[index] == "":
                 horsiewinner = horses[index]
                 if horsiechooseinput == index + 1:
