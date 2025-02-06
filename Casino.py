@@ -605,6 +605,24 @@ def CasinoWar():
     print("The point of the game is to receive a higher value card than your opponent.")
     print("If it's a tie, you can either surrender (losing half of your bet) or go into war \n(both receive yet another card. If your card is higher, you win; otherwise, you lose).\n")
     
+    def deal_cards():
+        global card_value_dealer, card_value_player
+        picked_card_player = random.choice(list(cards.keys()))
+        picked_card_dealer = random.choice(list(cards.keys()))
+        
+        card_value_player = cards[picked_card_player]
+        card_value_dealer = cards[picked_card_dealer]
+        
+        print("\033[H\033[J", end="")
+        print("Dealing cards...")
+        time.sleep(1)
+        print(f"Your war card: \n[ {picked_card_player} ]")
+        time.sleep(1)
+        print(f"Dealer's war card: \n[ {picked_card_dealer} ]")
+        time.sleep(0.1)
+        print("\033[H\033[J", end="")
+        print(f"Your card: \n[ {picked_card_player} ]")
+        print(f"Dealer's card: \n[ {picked_card_dealer} ]")
     while True:
         try:
             print(f"\nCurrent balance: {money}")
@@ -629,23 +647,7 @@ def CasinoWar():
                 else:
                     print("Please choose 'Y' or 'N'.")
         print("\033[H\033[J", end="")
-        
-        picked_card_player = random.choice(list(cards.keys()))
-        picked_card_dealer = random.choice(list(cards.keys()))
-        
-        card_value_player = cards[picked_card_player]
-        card_value_dealer = cards[picked_card_dealer]
-        print("Dealing cards...")
-        time.sleep(1)
-        print(f"Your card: \n[ {picked_card_player} ]")
-        time.sleep(1)
-        print(f"Dealer's card: \n[ {picked_card_dealer} ]")
-        time.sleep(0.1)
-        print("\033[H\033[J", end="")
-
-        print(f"Your card: \n[ {picked_card_player} ]")
-        print(f"Dealer's card: \n[ {picked_card_dealer} ]")
-
+        deal_cards()
         time.sleep(1)
         
         if card_value_player > card_value_dealer:
@@ -670,23 +672,8 @@ def CasinoWar():
                         break
                     elif choice == 2:
                         if money >= bet * 2:
-                            print("You went into war!")
-                            
-                            picked_card_player_war = random.choice(list(cards.keys()))
-                            picked_card_dealer_war = random.choice(list(cards.keys()))
-                            
-                            card_value_player_war = cards[picked_card_player_war]
-                            card_value_dealer_war = cards[picked_card_dealer_war]
-                            
-                            print("\033[H\033[J", end="")
-                            print("Dealing cards...")
-                            time.sleep(1)
-
-                            print(f"Your war card: \n[ {picked_card_player_war} ]")
-                            time.sleep(1)
-                            print(f"Dealer's war card: \n[ {picked_card_dealer_war} ]")
-                            
-                            if card_value_player_war >= card_value_dealer_war:
+                            deal_cards()
+                            if card_value_player >= card_value_dealer:
                                 money += bet * 2
                                 print(f"= You won {bet} dollars! =")
                                 print("You gained 20 XP ")
