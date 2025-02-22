@@ -23,7 +23,7 @@ SlotSymbols = ["❌", "🍒", "🔔", "🍋", "🍒", "🔔", "🍋", "💎"] # 
 # Keno.             No list to implement
 # Horse betting.    No list to implement
 
-cards = {"A": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13} # Casino war
+cards = {"A": 11, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 11, "Q": 12, "K": 13} # Casino war
 
 # Coin flip.        No list to implement
 # Crash.            No list to implement
@@ -48,7 +48,7 @@ wins_horsebetting = 0
 json_datetime = "N/A"
 legit = True
 value1 = 0
-
+wins_blackjack = 0
 save_file = "Casinosave.json"
 
 def Stats():
@@ -71,6 +71,7 @@ def Stats():
     print(f"XP:       {xp} / {xptoreach}")
     print(f"[{xp_filled}]\n")
 
+    print(f"Blackjack wins:     {wins_blackjack}")
     print(f"Roulette wins:      {wins_roulette}")
     print(f"Slots wins:         {wins_slots}")
     print(f"Keno wins:          {wins_keno}")
@@ -81,6 +82,127 @@ def Stats():
 
     print(f"Press enter to exit")
     input()
+
+def Blackjack():
+    global money, wins_blackjack, dealer_turn_end, player_turn_end
+    print("\033[H\033[J", end="")
+    print("🃏 Welcome to blackjack 🃏")
+    print("The goal of blackjack is to have a hand value closer to 21 than the dealer's without exceeding 21.")
+    print(f"\nCurrent balance: {money}")
+    print("Enter your bet.")
+    while True:
+        try:
+            input_bet = input()
+            bet_blackjack = int(input_bet)
+            if -1 < bet_blackjack < money+1:
+                money -= bet_blackjack
+                break
+            else:
+                print("Please select a valid bet")
+        except ValueError:
+            print("Please select a valid number")
+    dealer_cards = []
+    player_cards = []
+    dealer_cards_num = []
+    player_cards_num = []
+
+    def add_card(person):
+        random_card = random.choice(list(cards.keys()))
+        random_cards_value = cards[random_card]
+        if person == "player":
+            player_cards.append(random_card)
+            player_cards_num.append(random_cards_value)
+        else:
+            dealer_cards.append(random_card)
+            dealer_cards_num.append(random_cards_value)
+
+    dealer_turn_end = False
+
+    def dealer_AI():
+        global dealer_turn_end, player_turn_end
+        if sum(dealer_cards_num) < 17:
+            add_card("dealer")
+            time.sleep(0.25)
+        else:
+            dealer_turn_end = True
+
+    def lose_game_blackjack():
+        global money
+        time.sleep(0.25)
+        print("You lost", bet_blackjack, "dollars!")
+    def win_game_blackjack():
+        global money
+        time.sleep(0.25)
+        money += bet_blackjack*2
+        print("You won", bet_blackjack, "dollars!")
+
+    def tie_game_blackjack():
+        global money
+        time.sleep(0.25)
+        money += bet_blackjack
+        print("Tie! You didnt win any money!")
+
+    ended = False
+    player_turn_end = False
+    def add_first_cards():
+        add_card("player")
+        add_card("player")
+        add_card("dealer")
+    add_first_cards()
+    while sum(player_cards_num) > 21:
+        
+        dealer_cards = []
+        player_cards = []
+        dealer_cards_num = []
+        player_cards_num = []
+        add_first_cards()
+    hitorstand = "N/A"
+    while not ended:
+        time.sleep(0.1)
+        dealer_cards_question_marks = ""
+        for i in range(len(dealer_cards)-1): # Probably not the best way to do it, but adds the question marks next to the "Dealer's cards: " text minus one
+            dealer_cards_question_marks += " ?"
+        def mainmenu():
+            print("\033[H\033[J", end="")
+            print(f"🃏===🃏===🃏===🃏===🃏===🃏===🃏")
+            print(f"Your cards: {', '.join(player_cards)} (Value: {sum(player_cards_num)})")
+            print(f"Dealer's cards: {dealer_cards[0]}{dealer_cards_question_marks}")
+            print(f"🃏===🃏===🃏===🃏===🃏===🃏===🃏")
+        if sum(player_cards_num) > 21:
+            player_turn_end = True
+            hitorstand = "N/A"
+        mainmenu()
+        if not player_turn_end:
+            print(f"1) Hit")
+            print(f"2) Stand")
+            hitorstand = input()
+        if hitorstand == "1":
+            add_card("player")
+        if hitorstand == "2":
+            player_turn_end = True
+        mainmenu()
+        dealer_AI()
+        
+        if dealer_turn_end and player_turn_end: # Win/lose scenarios
+            time.sleep(0.25)
+            print("\033[H\033[J", end="")
+            print("🃏==========================🃏")
+            print(f"Your cards: {', '.join(player_cards)} (Value: {sum(player_cards_num)})")
+            print(f"Dealer's cards: {', '.join(dealer_cards)} (Value: {sum(dealer_cards_num)})")
+            print("🃏==========================🃏")
+            if sum(player_cards_num) == sum(dealer_cards_num):
+                tie_game_blackjack()
+            if sum(player_cards_num) < sum(dealer_cards_num) <= 21:
+                lose_game_blackjack()
+            elif sum(player_cards_num) > 21:
+                lose_game_blackjack()
+            elif sum(dealer_cards_num) > 21:
+                win_game_blackjack()
+            elif sum(dealer_cards_num) < sum(player_cards_num) <= 21:
+                win_game_blackjack()
+            ended = True
+    time.sleep(2)
+    print("\033[H\033[J", end="")
 
 def Roulette():
     global money, wins_roulette, xp
@@ -929,14 +1051,15 @@ def CasinoMenu():
         print(f"Level:    {level}")
         print(f"XP:       {xp} / {xptoreach}")
         print(f"[{xp_filled}]\n")
-        print("1) Roulette")
-        print("2) Slots")
-        print("3) Horse Betting")
-        print("4) Casino War")
-        print("5) Coin Flip")
-        print("6) Crash")
-        print("7) Keno")
-        print("8) Daily reward\n")
+        print("1) Blackjack")
+        print("2) Roulette")
+        print("3) Slots")
+        print("4) Horse Betting")
+        print("5) Casino War")
+        print("6) Coin Flip")
+        print("7) Crash")
+        print("8) Keno")
+        print("9) Daily reward\n")
 
         print("s) Stats")
         print("q) Exit")
@@ -945,23 +1068,25 @@ def CasinoMenu():
                 choicemenu = input("\nSelect an option: ")
 
                 if choicemenu == "1":
+                    Blackjack() 
+                if choicemenu == "2":
                     Roulette()
-                elif choicemenu == "2":
-                    Slots()
                 elif choicemenu == "3":
-                    HorseBettin()
+                    Slots()
                 elif choicemenu == "4":
-                    CasinoWar()
+                    HorseBettin()
                 elif choicemenu == "5":
-                    Coinflip()
+                    CasinoWar()
                 elif choicemenu == "6":
+                    Coinflip()
+                elif choicemenu == "7":
                     coolstoppingargument = True
                     cashout = False
                     dead = False
                     Crash()
-                elif choicemenu == "7":
-                    Keno()
                 elif choicemenu == "8":
+                    Keno()
+                elif choicemenu == "9":
                     dailyreward()
                 elif choicemenu == "s":
                     Stats()
