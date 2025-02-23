@@ -3,6 +3,8 @@ This is a simple CLI/TUI Casino featuring a variety of different games. Try your
  
 ![An image of the casino's CLI](https://github.com/Xameren/Casino/blob/main/Casino%20image.png)
 ## Casino game list
+**Blackjack** <br>
+Have a hand value closer to 21 than the dealer's without exceeding 21.<br>
 **Roulette** <br>
 Predict where the ball will land on the roulette wheel.<br>
 **Slots**<br>
