@@ -1117,6 +1117,7 @@ def save_game():
         "wins_coinflip": wins_coinflip,
         "wins_crash": wins_crash,
         "wins_horsebetting": wins_horsebetting,
+        "wins_blackjack": wins_blackjack,
         "value1": value1,
         "legit": legit,
         "json_datetime": json_datetime
@@ -1129,24 +1130,25 @@ def save_game():
         json.dump(game_state, file)
 
 def load_game():
-    global m, json_datetime, lastrewardtime, legit, value1, load_fail, money, merry_christmas, username, xp, xptoreach, wins_casinowar, wins_coinflip, wins_crash, wins_horsebetting, wins_keno, wins_roulette, wins_slots, level, username
+    global m, json_datetime, lastrewardtime, legit, value1, load_fail, money, merry_christmas, username, xp, xptoreach, wins_casinowar, wins_coinflip, wins_crash, wins_horsebetting, wins_keno, wins_roulette, wins_slots, level, username, wins_blackjack
     if os.path.exists(save_file):
         try:
             with open(save_file, 'r') as file:
                 game_state = json.load(file)
-                username = game_state["username"]
-                money = game_state["money"]
-                merry_christmas = game_state["merry_christmas"]
-                xp = game_state["xp"]
-                xptoreach = game_state["xptoreach"]
-                level = game_state["level"]
-                wins_roulette = game_state["wins_roulette"]
-                wins_slots = game_state["wins_slots"]
-                wins_keno = game_state["wins_keno"]
-                wins_casinowar = game_state["wins_casinowar"]
-                wins_coinflip = game_state["wins_coinflip"]
-                wins_crash = game_state["wins_crash"]
-                wins_horsebetting = game_state["wins_horsebetting"]
+                username = game_state.get("username", "N/A")
+                money = game_state.get("money", 1000)
+                merry_christmas = game_state.get("merry_christmas", True)
+                xp = game_state.get("xp", 0)
+                xptoreach = game_state.get("xptoreach", 0)
+                level = game_state.get("level", 1)
+                wins_roulette = game_state.get("wins_roulette", 0)
+                wins_slots = game_state.get("wins_slots", 0)
+                wins_keno = game_state.get("wins_keno", 0)
+                wins_casinowar = game_state.get("wins_casinowar", 0)
+                wins_coinflip = game_state.get("wins_coinflip", 0)
+                wins_crash = game_state.get("wins_crash", 0)
+                wins_horsebetting = game_state.get("wins_horsebetting", 0)
+                wins_blackjack = game_state.get("wins_blackjack", 0)
                 value1 = game_state["value1"]
                 legit = game_state["legit"]
                 json_datetime = game_state["json_datetime"]
