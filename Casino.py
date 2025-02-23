@@ -109,6 +109,7 @@ def Blackjack():
     def add_card(person):
         random_card = random.choice(list(cards.keys()))
         random_cards_value = cards[random_card]
+
         if person == "player":
             player_cards.append(random_card)
             player_cards_num.append(random_cards_value)
@@ -130,6 +131,7 @@ def Blackjack():
         global money
         time.sleep(0.25)
         print("You lost", bet_blackjack, "dollars!")
+
     def win_game_blackjack():
         global money
         time.sleep(0.25)
@@ -144,61 +146,81 @@ def Blackjack():
 
     ended = False
     player_turn_end = False
-    def add_first_cards():
+
+    def add_first_cards(): # Deal the first cards, if its above 21 then deal them again
         add_card("player")
         add_card("player")
         add_card("dealer")
     add_first_cards()
     while sum(player_cards_num) > 21:
-        
         dealer_cards = []
         player_cards = []
         dealer_cards_num = []
         player_cards_num = []
         add_first_cards()
+
     hitorstand = "N/A"
     while not ended:
+        aces_dealer_deck = dealer_cards.count("A")
+        aces_player_deck = player_cards.count("A")
+
+        aces_dealer_deck_converted = 0
+        aces_player_deck_converted = 0
+
+        while sum(player_cards_num) > 21 and aces_player_deck-aces_player_deck_converted > 0:
+            aces_player_deck_converted += 1
+            player_cards_num.append(-10)
+        while sum(dealer_cards_num) > 21 and aces_dealer_deck-aces_dealer_deck_converted > 0:
+            aces_dealer_deck_converted += 1
+            dealer_cards_num.append(-10)
+
+        
         time.sleep(0.1)
         dealer_cards_question_marks = ""
         for i in range(len(dealer_cards)-1): # Probably not the best way to do it, but adds the question marks next to the "Dealer's cards: " text minus one
             dealer_cards_question_marks += " ?"
         def mainmenu():
+            player_total = sum(player_cards_num)
             print("\033[H\033[J", end="")
             print(f"🃏===🃏===🃏===🃏===🃏===🃏===🃏")
-            print(f"Your cards: {', '.join(player_cards)} (Value: {sum(player_cards_num)})")
-            print(f"Dealer's cards: {dealer_cards[0]}{dealer_cards_question_marks}")
+            print(f"Your cards: {', '.join(player_cards)} (Value: {player_total})") # Your cards: K, 5 (Value: 15)
+            print(f"Dealer's cards: {dealer_cards[0]}{dealer_cards_question_marks}") # Dealer's cards: K, ?
             print(f"🃏===🃏===🃏===🃏===🃏===🃏===🃏")
         if sum(player_cards_num) > 21:
             player_turn_end = True
             hitorstand = "N/A"
         mainmenu()
-        if not player_turn_end:
-            print(f"1) Hit")
-            print(f"2) Stand")
-            hitorstand = input()
-        if hitorstand == "1":
-            add_card("player")
-        if hitorstand == "2":
-            player_turn_end = True
+        while True:
+            if not player_turn_end:
+                print(f"1) Hit")
+                print(f"2) Stand")
+                hitorstand = input()
+            if hitorstand == "1":
+                add_card("player")
+                break
+            if hitorstand == "2":
+                player_turn_end = True
+                break
+            if hitorstand == "N/A":
+                break
+        
         mainmenu()
         dealer_AI()
         
         if dealer_turn_end and player_turn_end: # Win/lose scenarios
+            player_total = sum(player_cards_num)
+            dealer_total = sum(dealer_cards_num)
             time.sleep(0.25)
             print("\033[H\033[J", end="")
             print("🃏==========================🃏")
-            print(f"Your cards: {', '.join(player_cards)} (Value: {sum(player_cards_num)})")
-            print(f"Dealer's cards: {', '.join(dealer_cards)} (Value: {sum(dealer_cards_num)})")
+            print(f"Your cards: {', '.join(player_cards)} (Value: {player_total})") # Your cards: K, 5 (Value: 15)
+            print(f"Dealer's cards: {', '.join(dealer_cards)} (Value: {dealer_total})") # Dealer's cards: K, 5 (Value: 15)
             print("🃏==========================🃏")
-            if sum(player_cards_num) == sum(dealer_cards_num):
+            if player_total == dealer_total: # if the player and the dealer have the same amount, then the player ties.
                 tie_game_blackjack()
-            if sum(player_cards_num) < sum(dealer_cards_num) <= 21:
+            if player_total < dealer_total <= 21 or player_total > 21: # If the player is over 21 or the dealer is higher than the player without being avove 21, then the player loses
                 lose_game_blackjack()
-            elif sum(player_cards_num) > 21:
-                lose_game_blackjack()
-            elif sum(dealer_cards_num) > 21:
-                win_game_blackjack()
-            elif sum(dealer_cards_num) < sum(player_cards_num) <= 21:
+            elif dealer_total > 21 or dealer_total < player_total <= 21: # If the dealer is over 21 or the player is higher than the dealer without being above 21, then the player wins
                 win_game_blackjack()
             ended = True
     time.sleep(2)
